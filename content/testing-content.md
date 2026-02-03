@@ -1,7 +1,6 @@
 ---
 title: Testing Content
-slug: content-here
-order: 100
+order: 101
 published: true
 ---
 # Content

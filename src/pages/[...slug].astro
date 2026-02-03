@@ -1,0 +1,56 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
+
+type PageEntry = CollectionEntry<"pages">;
+
+// ✅ Tell Astro what paths to build
+export async function getStaticPaths() {
+  const pages = (await getCollection("pages"))
+    .filter((p) => p.data.published !== false);
+
+  return pages.map((p) => ({
+    params: { slug: p.slug === "home" ? "" : p.slug },
+  }));
+}
+
+const pages: PageEntry[] = (await getCollection("pages"))
+  .filter((p: PageEntry) => p.data.published !== false)
+  .sort((a: PageEntry, b: PageEntry) => a.data.order - b.data.order);
+
+const nav = pages.map((p) => ({
+  title: p.data.title,
+  href: p.slug === "/" ? "/" : `/${p.slug}`,
+}));
+
+// Find which page to render based on URL
+const slugParam = Astro.params.slug;
+const current = typeof slugParam === "string" && slugParam.length > 0
+  ? slugParam
+  : "home";
+
+const page = pages.find((p) => p.slug === current);
+
+if (!page) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await page.render();
+---
+
+<SiteLayout title={page.data.title} nav={nav}>
+  <article
+    class="
+      prose prose-slate max-w-none
+      prose-a:underline
+      prose-table:w-full prose-table:table-auto
+      prose-th:border prose-th:border-slate-300 prose-th:bg-slate-50 prose-th:px-3 prose-th:py-2
+      prose-td:border prose-td:border-slate-200 prose-td:px-3 prose-td:py-2
+    "
+  >
+    <div class="overflow-x-auto">
+      <Content />
+    </div>
+  </article>
+</SiteLayout>

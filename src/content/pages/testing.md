@@ -1,6 +1,5 @@
 ---
 title: Testing
-slug: test-page
 description: here is the description
 order: 100
 published: true

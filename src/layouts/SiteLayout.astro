@@ -1,0 +1,49 @@
+---
+import "../styles/global.css";
+
+type NavItem = {
+  title: string;
+  href: string;
+};
+
+interface Props {
+  title?: string;
+  nav?: NavItem[];
+}
+
+const { title = "My Site", nav = [] } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+
+  <body class="min-h-screen bg-white text-slate-900">
+    <header class="border-b">
+      <div class="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
+        <a href="/" class="font-semibold">My Site</a>
+
+        <nav class="flex gap-4 text-sm">
+          {nav.map((p) => (
+            <a href={p.href} class="hover:underline">
+              {p.title}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-4 py-8 bg-red-200">
+      <slot />
+    </main>
+
+    <footer class="border-t">
+      <div class="mx-auto max-w-4xl px-4 py-6 text-sm text-slate-500">
+        © {new Date().getFullYear()}
+      </div>
+    </footer>
+  </body>
+</html>
